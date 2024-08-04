@@ -9,7 +9,7 @@ def encrypt_block(message, key):
     :return: le cryptogramme (128bits)
     """
     kr, km = key_generator(key)
-    for i in range(6):
+    for i in range(0, 6):
         message = forward_quad_round(message, kr[i], km[i])
     for i in range(6, 12):
         message = reverse_quad_round(message, kr[i], km[i])
@@ -26,15 +26,12 @@ def decrypt_block(cipher, key):
     """
     kr, km = key_generator(key)
 
-    reversed_kr = [0] * 12
-    reversed_km = [0] * 12
-    for i in range(12):
-        reversed_kr[i] = kr[11 - i]
-        reversed_km[i] = km[11 - i]
+    kr.reverse()
+    km.reverse()
 
-    for i in range(6):
-        cipher = forward_quad_round(cipher, reversed_kr[i], reversed_km[i])
+    for i in range(0, 6):
+        cipher = forward_quad_round(cipher, kr[i], km[i])
     for i in range(6, 12):
-        cipher = reverse_quad_round(cipher, reversed_kr[i], reversed_km[i])
+        cipher = reverse_quad_round(cipher, kr[i], km[i])
 
     return cipher

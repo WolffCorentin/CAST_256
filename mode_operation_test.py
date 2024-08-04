@@ -165,3 +165,29 @@ class TestOperatorMode(unittest.TestCase):
         key = 2074038311066901704458280453016374652262928663593769232443771776310965583625
         message = decrypt(cipher, key, "CBC")
         assert expected == bytes(message)
+
+    def test_encrypt_ofb(self):
+        txt = "Un message secret que personne ne doit lire sauf toi ;-)"
+        key = 59175378448483159366830979133373343628532096962263744739244943153083052201664
+        cipher = encrypt(bytearray(txt, 'utf-8'), key, "OFB")
+        self.assertNotEqual(cipher, txt.encode('utf-8'))
+
+    def test_decrypt_ofb(self):
+        txt = "Un message secret que personne ne doit lire sauf toi ;-)"
+        key = 59175378448483159366830979133373343628532096962263744739244943153083052201664
+        cipher = encrypt(bytearray(txt, 'utf-8'), key, "OFB")
+        message = decrypt(cipher, key, "OFB")
+        self.assertEqual(bytes(message).decode('utf-8'), txt)
+
+    def test_encrypt_pcbc(self):
+        txt = "Un message secret que personne ne doit lire sauf toi ;-)"
+        key = 59175378448483159366830979133373343628532096962263744739244943153083052201664
+        cipher = encrypt(bytearray(txt, 'utf-8'), key, "PCBC")
+        self.assertNotEqual(cipher, txt.encode('utf-8'))
+
+    def test_decrypt_pcbc(self):
+        txt = "Un message secret que personne ne doit lire sauf toi ;-)"
+        key = 59175378448483159366830979133373343628532096962263744739244943153083052201664
+        cipher = encrypt(bytearray(txt, 'utf-8'), key, "PCBC")
+        message = decrypt(cipher, key, "PCBC")
+        self.assertEqual(bytes(message).decode('utf-8'), txt)

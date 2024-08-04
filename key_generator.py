@@ -36,16 +36,16 @@ def initialization():
     les clés de rotation tr et de masque tm.
     """
     tr, tm = [[0] * 8 for _ in range(24)], [[0] * 8 for _ in range(24)]
-    cm = 2**30 * sqrt(2)
-    mm = 2**30 * sqrt(3)
+    cm = 0x5A827999
+    mm = 0x6ED9EBA1
     cr = 19
     mr = 17
-    for i in range(0, 24):
-        for j in range(0, 8):
+    for i in range(24):
+        for j in range(8):
             tm[i][j] = cm
             cm = sum_mod_232(cm, mm)
             tr[i][j] = cr
-            cr = sum_mod_232(cr, mr)
+            cr = (cr + mr) % 32
 
     return tr, tm
 
@@ -60,9 +60,9 @@ def key_generator(key):
     """
     kr, km = [], []
     tr, tm = initialization()
-    for i in range(0, 24, 2):
-        key = forward_octave(key, tr[i], tm[i])
-        key = forward_octave(key, tr[i+1], tm[i+1])
+    for i in range(12):
+        key = forward_octave(key, tr[2*i], tm[2*i])
+        key = forward_octave(key, tr[(2*i)+1], tm[(2*i)+1])
         a, b, c, d, e, f, g, h = extract_32bit_bloc_from_256(key)
         a = a & 0b11111
         c = c & 0b11111

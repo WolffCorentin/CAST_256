@@ -149,12 +149,12 @@ def substitution_quarter_image(abcd):
                 le bloc de 32bits de départ.
       """
     a, b, c, d = extract_8bit_blocs_from_32(abcd)
-    s_a = s_box1[a]
-    s_b = s_box2[b]
-    s_c = s_box3[c]
-    s_d = s_box4[d]
+    sub_a = s_box1[a]
+    sub_b = s_box2[b]
+    sub_c = s_box3[c]
+    sub_d = s_box4[d]
 
-    return s_a, s_b, s_c, s_d
+    return sub_a, sub_b, sub_c, sub_d
 
 
 def function1(d, kri, kmi):
@@ -166,10 +166,10 @@ def function1(d, kri, kmi):
       :param kmi: la clé de masque (32bits)
       :return: le résultat des opérations (32bits)
     """
-    i = shift_left(sum_mod_232(kmi, d), 32, kri)
-    s_a, s_b, s_c, s_d = substitution_quarter_image(i)
-    o = sum_mod_232(diff_mod_232(s_a ^ s_b, s_c), s_d)
-    return o
+    i = sum_mod_232(kmi, d)
+    shifted_i = shift_left(i, 32, kri)
+    a, b, c, d = substitution_quarter_image(shifted_i)
+    return sum_mod_232(diff_mod_232(a ^ b, c), d)
 
 
 def function2(d, kri, kmi):
@@ -181,10 +181,10 @@ def function2(d, kri, kmi):
       :param kmi: la clé de masque (32bits)
       :return: le résultat des opérations (32bits)
     """
-    i = shift_left(kmi ^ d, 32, kri)
-    s_a, s_b, s_c, s_d = substitution_quarter_image(i)
-    o = sum_mod_232(diff_mod_232(s_a, s_b), s_c) ^ s_d
-    return o
+    i = kmi ^ d
+    shifted_i = shift_left(i, 32, kri)
+    a, b, c, d = substitution_quarter_image(shifted_i)
+    return sum_mod_232(diff_mod_232(a, b), c) ^ d
 
 
 def function3(d, kri, kmi):
@@ -196,10 +196,10 @@ def function3(d, kri, kmi):
       :param kmi: la clé de masque (32bits)
       :return: le résultat des opérations (32bits)
     """
-    i = shift_left(diff_mod_232(kmi, d), 32, kri)
-    s_a, s_b, s_c, s_d = substitution_quarter_image(i)
-    o = diff_mod_232(sum_mod_232(s_a, s_b) ^ s_c, s_d)
-    return o
+    i = diff_mod_232(kmi, d)
+    shifted_i = shift_left(i, 32, kri)
+    a, b, c, d = substitution_quarter_image(shifted_i)
+    return diff_mod_232(sum_mod_232(a, b) ^ c, d)
 
 
 def forward_quad_round(abcd, kr, km):
